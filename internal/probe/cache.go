@@ -1,0 +1,38 @@
+package probe
+
+import (
+	"sync"
+	"time"
+	"maps"
+)
+
+type ProbeResult struct {
+	Online    bool
+	Players   int
+	Timestamp time.Time
+	Err       error
+
+	ConnectDuration time.Duration
+	ProbeDuration   time.Duration
+}
+
+type Cache struct {
+	mu     sync.RWMutex
+	status map[string]ProbeResult
+}
+
+func NewCache() *Cache {
+	return &Cache{
+		status: make(map[string]ProbeResult),
+	}
+}
+func (c *Cache) Set(name string, res ProbeResult) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.status[name] = res
+}
+func (c *Cache) Snapshot() map[string]ProbeResult {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	return maps.Clone(c.status)
+}
