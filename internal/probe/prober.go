@@ -55,12 +55,13 @@ func (p *Prober) probeAll(ctx context.Context) {
 
 	for _, t := range p.targets {
 		g.Go(func() error {
-			online, players, err := mc.Ping(ctx, t.Addr, p.timeout)
+			online, players,rtt, err := mc.Ping(ctx, t.Addr, p.timeout)
 			p.cache.Set(t.Name, ProbeResult{
 				Online:    online,
 				Players:   players,
 				Timestamp: time.Now(),
 				Err:       err,
+				ProbeDuration: rtt,
 			})
 			return nil
 		})

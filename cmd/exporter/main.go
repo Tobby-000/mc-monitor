@@ -33,18 +33,18 @@ func main() {
 	cache := probe.NewCache()
 	// targets
 	targets := []probe.Target{
-		{Name: "main", Addr: "127.0.0.1:25565"},
-		{Name: "main1", Addr: "127.0.0.1:25565"},
-		{Name: "main2", Addr: "127.0.0.1:25565"},
-		{Name: "main3", Addr: "127.0.0.1:25565"},
-		{Name: "main4", Addr: "127.0.0.1:25565"},
-		{Name: "main5", Addr: "127.0.0.1:25565"},
-		{Name: "main6", Addr: "127.0.0.1:25565"},
-		{Name: "main7", Addr: "127.0.0.1:25565"},
-		{Name: "main8", Addr: "127.0.0.1:25565"},
-		{Name: "main9", Addr: "127.0.0.1:25565"},
-		{Name: "main10", Addr: "127.0.0.1:25565"},
-		{Name: "main11", Addr: "127.0.0.1:25565"},
+		{Name: "real", Addr: "stone.komonmc.cn"},
+		{Name: "refused", Addr: "127.0.0.1:25599"},
+		{Name: "timeout", Addr: "192.168.111.1:25565"},
+		{Name: "unknownhost", Addr: "unknown.host:25565"},
+		{Name: "wrongprotocal", Addr: "www.komonmc.cn:443"},
+		// {Name: "main5", Addr: "127.0.0.1:25565"},
+		// {Name: "main6", Addr: "127.0.0.1:25565"},
+		// {Name: "main7", Addr: "127.0.0.1:25565"},
+		// {Name: "main8", Addr: "127.0.0.1:25565"},
+		// {Name: "main9", Addr: "127.0.0.1:25565"},
+		// {Name: "main10", Addr: "127.0.0.1:25565"},
+		// {Name: "main11", Addr: "127.0.0.1:25565"},
 	}
 	// prober init
 	prober := probe.NewProber(targets, cache, *probeInterval, *probeTimeout, *probeLimit, logger)

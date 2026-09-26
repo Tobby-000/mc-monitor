@@ -11,8 +11,7 @@ type ProbeResult struct {
 	Players   int
 	Timestamp time.Time
 	Err       error
-
-	ConnectDuration time.Duration
+	// ConnectDuration time.Duration
 	ProbeDuration   time.Duration
 }
 
