@@ -2,24 +2,28 @@ package mc
 
 import (
 	"context"
+	"encoding/json"
 	"time"
-
-	"math/rand"
 	"fmt"
+
+	"github.com/Tnze/go-mc/bot"
 )
 
-func Ping(ctx context.Context,addr string,timeout time.Duration) (bool,int,error){
-		// 模拟 20% 丢包
-	if rand.Float64() < 0.2 {
-		return false, 0, fmt.Errorf("simulated packet loss")
-	}
 
-	// 模拟 0 到 timeout 之间的随机延迟
-	delay := time.Duration(rand.Int63n(int64(timeout)))
-	select {
-	case <-time.After(delay):
-	case <-ctx.Done():
-		return false, 0, ctx.Err()
+func Ping(ctx context.Context,addr string,timeout time.Duration) (bool,int,time.Duration,error){
+	ctx,cancel:=context.WithTimeout(ctx,timeout)
+	defer cancel()
+	resp ,delay,err:=bot.PingAndListContext(ctx,addr)
+	if err!=nil{
+		return false,0,0,fmt.Errorf("ping %s: %w",addr,err)
 	}
-	return true,rand.Intn(100),nil
+	var status struct{
+		Player struct{
+			Oline int `json:"online"`
+		}`json:"players"`
+	}
+	if err:=json.Unmarshal(resp,&status);err!=nil{
+		return false,0,0,fmt.Errorf("Decode json error:%w",err)
+	}
+	return true,status.Player.Oline,delay,nil
 }
