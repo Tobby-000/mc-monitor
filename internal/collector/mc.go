@@ -7,10 +7,11 @@ import (
 )
 
 type MCCollector struct {
-	cache      *probe.Cache
-	onlineDesc *prometheus.Desc
-	playerDesc *prometheus.Desc
-	rttDesc    *prometheus.Desc
+	cache        *probe.Cache
+	onlineDesc   *prometheus.Desc
+	playerDesc   *prometheus.Desc
+	protocolDesc *prometheus.Desc
+	totalDesc    *prometheus.Desc
 }
 
 func NewMCCollector(cache *probe.Cache) (*MCCollector, error) {
@@ -28,9 +29,15 @@ func NewMCCollector(cache *probe.Cache) (*MCCollector, error) {
 			[]string{"server"},
 			nil,
 		),
-		rttDesc: prometheus.NewDesc(
-			"minecraft_ping_rtt_seconds",
-			"Round-trip time of the Minecraft Server List Ping probe, in seconds.",
+		protocolDesc: prometheus.NewDesc(
+			"minecraft_probe_protocol_duration_seconds",
+			"Duration of the Minecraft Server List Ping protocol exchange (handshake, status request, status response).",
+			[]string{"server"},
+			nil,
+		),
+		totalDesc: prometheus.NewDesc(
+			"minecraft_probe_total_duration_seconds",
+			"Total duration of the Minecraft server probe, including DNS resolution, TCP handshake, and protocol exchange.",
 			[]string{"server"},
 			nil,
 		),
@@ -40,7 +47,7 @@ func NewMCCollector(cache *probe.Cache) (*MCCollector, error) {
 func (m *MCCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- m.onlineDesc
 	ch <- m.playerDesc
-	ch <- m.rttDesc
+	ch <- m.protocolDesc
 }
 
 func (m *MCCollector) Collect(ch chan<- prometheus.Metric) {
@@ -56,7 +63,9 @@ func (m *MCCollector) Collect(ch chan<- prometheus.Metric) {
 			ch <- prometheus.MustNewConstMetric(
 				m.playerDesc, prometheus.GaugeValue, float64(res.Players), name)
 			ch <- prometheus.MustNewConstMetric(
-				m.rttDesc, prometheus.GaugeValue, res.ProbeDuration.Seconds(), name)
+				m.protocolDesc, prometheus.GaugeValue, res.ProtocolDuration.Seconds(), name)
+			ch <- prometheus.MustNewConstMetric(
+				m.totalDesc, prometheus.GaugeValue, res.TotalDuration.Seconds(), name)
 		}
 	}
 }
