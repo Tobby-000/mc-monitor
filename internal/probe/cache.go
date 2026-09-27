@@ -1,9 +1,9 @@
 package probe
 
 import (
+	"maps"
 	"sync"
 	"time"
-	"maps"
 )
 
 type ProbeResult struct {
@@ -12,7 +12,7 @@ type ProbeResult struct {
 	Timestamp time.Time
 	Err       error
 	// ConnectDuration time.Duration
-	ProbeDuration   time.Duration
+	ProbeDuration time.Duration
 }
 
 type Cache struct {
