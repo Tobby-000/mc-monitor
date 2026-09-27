@@ -3,6 +3,7 @@ package probe
 import (
 	"context"
 	"log/slog"
+	"sync/atomic"
 	"time"
 
 	"golang.org/x/sync/errgroup"
@@ -21,6 +22,8 @@ type Prober struct {
 	timeout  time.Duration
 	limit    int
 	logger   *slog.Logger
+	// running 防止上一轮探测未完成时，下一轮 Ticker 触发导致探测重叠。
+	running  atomic.Bool
 }
 
 func NewProber(targets []Target, cache *Cache, interval time.Duration, timeout time.Duration, limit int, logger *slog.Logger) *Prober {
@@ -50,6 +53,14 @@ func (p *Prober) Run(ctx context.Context) {
 }
 
 func (p *Prober) probeAll(ctx context.Context) {
+	// 当上一次探测还在运行时，跳过本轮
+	if p.running.Load() {
+		p.logger.Warn("previous probe still running, skipping this round")
+		return
+	}
+	p.running.Store(true)
+	defer p.running.Store(false)
+
 	g, ctx := errgroup.WithContext(ctx)
 	g.SetLimit(p.limit)
 
