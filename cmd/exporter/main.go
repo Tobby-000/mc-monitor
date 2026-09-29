@@ -14,40 +14,47 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"mc-monitor/internal/collector"
+	"mc-monitor/internal/config"
 	"mc-monitor/internal/probe"
 )
 
 func main() {
 	// Flags
-	listenAddr := flag.String("listen", ":9092", "address to listen on")
-	probeInterval := flag.Duration("interval", 30*time.Second, "probe interval")
-	probeTimeout := flag.Duration("timeout", 5*time.Second, "probe timeout")
-	probeLimit := flag.Int("limit", 20, "probe limit")
+	listenAddr := flag.String("listen", ":9090", "address to listen on")
+	configPath := flag.String("config", "config.yaml", "path to the YAML config file")
 	flag.Parse()
 	// Logger Init
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
 		Level: slog.LevelInfo,
 	}))
 	slog.SetDefault(logger)
+	// load config
+	cfg, err := config.Load(*configPath)
+	if err != nil {
+		logger.Error("failed to load config", "path", *configPath, "err", err)
+		os.Exit(1)
+	}
+	for _, w := range cfg.Warns() {
+		logger.Warn(w)
+	}
 	// Cache Init
 	cache := probe.NewCache()
 	// targets
-	targets := []probe.Target{
-		{Name: "real", Addr: "stone.komonmc.cn"},
-		{Name: "refused", Addr: "127.0.0.1:25599"},
-		{Name: "timeout", Addr: "192.168.111.1:25565"},
-		{Name: "unknownhost", Addr: "unknown.host:25565"},
-		{Name: "wrongprotocal", Addr: "www.komonmc.cn:443"},
-		// {Name: "main5", Addr: "127.0.0.1:25565"},
-		// {Name: "main6", Addr: "127.0.0.1:25565"},
-		// {Name: "main7", Addr: "127.0.0.1:25565"},
-		// {Name: "main8", Addr: "127.0.0.1:25565"},
-		// {Name: "main9", Addr: "127.0.0.1:25565"},
-		// {Name: "main10", Addr: "127.0.0.1:25565"},
-		// {Name: "main11", Addr: "127.0.0.1:25565"},
+	targets := make([]probe.Target, 0, len(cfg.Targets))
+	for _, t := range cfg.Targets {
+		targets = append(targets, probe.Target{
+			Name: t.Name,
+			Addr: t.Addr,
+		})
 	}
 	// prober init
-	prober := probe.NewProber(targets, cache, *probeInterval, *probeTimeout, *probeLimit, logger)
+	prober := probe.NewProber(
+		targets,
+		cache,
+		time.Duration(cfg.Probe.Interval)*time.Second,
+		time.Duration(cfg.Probe.Timeout)*time.Second,
+		cfg.Probe.Limit,
+		logger)
 	// context Init
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
@@ -89,8 +96,8 @@ func main() {
 	<-ctx.Done()
 	logger.Info("find shutdown signal,exiting")
 	// wait 5s for http requests before program shutdown
-	shutdownCtx, shutdownCacel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer shutdownCacel()
+	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer shutdownCancel()
 	if err := server.Shutdown(shutdownCtx); err != nil {
 		logger.Error("http server shutdown error", "err", err)
 	}
