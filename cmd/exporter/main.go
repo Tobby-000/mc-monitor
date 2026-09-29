@@ -13,9 +13,9 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"mc-monitor/internal/collector"
-	"mc-monitor/internal/config"
-	"mc-monitor/internal/probe"
+	"mcping-exporter/internal/collector"
+	"mcping-exporter/internal/config"
+	"mcping-exporter/internal/probe"
 )
 
 func main() {

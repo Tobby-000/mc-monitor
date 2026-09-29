@@ -8,7 +8,7 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	"mc-monitor/internal/mc"
+	"mcping-exporter/internal/mc"
 )
 
 type Target struct {

@@ -3,7 +3,7 @@ package collector
 import (
 	"github.com/prometheus/client_golang/prometheus"
 
-	"mc-monitor/internal/probe"
+	"mcping-exporter/internal/probe"
 )
 
 type MCCollector struct {

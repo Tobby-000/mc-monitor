@@ -1,4 +1,4 @@
-module mc-monitor
+module mcping-exporter
 
 go 1.27.1
 
