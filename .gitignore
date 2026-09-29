@@ -1,0 +1,23 @@
+# Binary
+/exporter
+/mcstatus-exporter
+*.exe
+*.test
+*.out
+
+# Config (含真实服务器地址，不入库)
+config.yaml
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*~
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 临时文件
+/tmp/
+*.log

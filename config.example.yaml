@@ -1,0 +1,19 @@
+# 复制为 config.yaml 后使用：
+#   cp config.example.yaml config.yaml
+
+# 探测基础设置
+probe:
+  # 探测周期，单位：秒，默认值：15
+  interval: 15
+  # 单次探测超时，单位：秒，默认值：5。必须小于 interval
+  timeout: 5
+  # 最大并发探测数，默认值：20
+  limit: 20
+
+# 目标设置
+# 支持SRV，支持省去默认端口 25565
+targets:
+  - name: example1
+    addr: example1.nil
+  - name: example2
+    addr: example2.nil:25565
