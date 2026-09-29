@@ -1,0 +1,8 @@
+.git
+.github
+.vscode
+.idea
+*.md
+config.yaml
+/exporter
+/mcping-exporter
