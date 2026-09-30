@@ -6,3 +6,4 @@
 config.yaml
 /exporter
 /mcping-exporter
+examples/

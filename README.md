@@ -98,6 +98,16 @@ flowchart LR
     Prometheus -->|GET /metrics| Collector
     Collector -->|snapshot| Cache
 ```
+## Grafana Dashboard
+
+[examples/dashboard.json](examples/dashboard.json) 提供了示例面板，包含：
+
+- 服务器在线状态
+- 在线人数
+- PING/PONG 往返延迟
+- 探测总耗时
+
+导入方式：Grafana → Dashboards → Import → 上传 JSON 文件。导入时会提示选择数据源。
 
 ## License
 
