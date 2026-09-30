@@ -78,5 +78,5 @@ func (p *Prober) probeAll(ctx context.Context) {
 			return nil
 		})
 	}
-	g.Wait()
+	_ = g.Wait()
 }

@@ -36,18 +36,18 @@ func Ping(ctx context.Context, addr string, timeout time.Duration) (PingResult, 
 	}
 	// close Nagle
 	if tcpConn, ok := rawConn.(*net.TCPConn); ok {
-		tcpConn.SetNoDelay(true)
+		_ = tcpConn.SetNoDelay(true)
 	}
 	// pack as MC connection
 	conn := mcnet.WrapConn(rawConn)
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	// set socket deadline(resolve timeout)
 	if deadline, ok := ctx.Deadline(); ok {
-		conn.Socket.SetDeadline(deadline)
+		_ = conn.Socket.SetDeadline(deadline)
 	}
 	// lisen ctx cancel signal
 	stop := context.AfterFunc(ctx, func() {
-		conn.Close()
+		_ = conn.Close()
 	})
 	defer stop()
 	// call protocol func
