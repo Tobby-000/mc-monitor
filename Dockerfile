@@ -12,9 +12,12 @@ RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" \
 
 FROM alpine:3.20
 
-RUN apk add --no-cache ca-certificates tzdata
+RUN apk add --no-cache ca-certificates tzdata \
+    && adduser -D -H -u 10001 exporter
 
 COPY --from=builder /out/mcping-exporter /usr/local/bin/mcping-exporter
+
+USER exporter
 
 EXPOSE 9090
 ENTRYPOINT ["/usr/local/bin/mcping-exporter"]
