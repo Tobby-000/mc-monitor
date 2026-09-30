@@ -63,11 +63,7 @@ func main() {
 
 	// collector regist and init
 
-	mc, err := collector.NewMCCollector(cache)
-	if err != nil {
-		logger.Error("fail to load mc collector", "err", err)
-		os.Exit(1)
-	}
+	mc := collector.NewMCCollector(cache)
 
 	reg := prometheus.NewRegistry()
 	reg.MustRegister(mc)
