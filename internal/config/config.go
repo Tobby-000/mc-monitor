@@ -58,10 +58,10 @@ func (c *Config) validate() error {
 		return fmt.Errorf("probe.timeout must be > 0")
 	}
 	if c.Probe.Interval <= c.Probe.Timeout {
-		return fmt.Errorf("probe.limit (%d) exceeds maximum (%d)", c.Probe.Limit, maxLimit)
+		return fmt.Errorf("probe.timeout (%d) must be < probe.interval(%d)", c.Probe.Timeout, c.Probe.Interval)
 	}
 	if c.Probe.Limit > maxLimit {
-		return fmt.Errorf("probe.Limit is too large,must be <= %d", maxLimit)
+		return fmt.Errorf("probe.limit is too large (%d),must be <= %d", c.Probe.Limit, maxLimit)
 	}
 	// targets check
 	if err := validateTargets(c.Targets); err != nil {
@@ -81,7 +81,7 @@ func (c *Config) Warns() []string {
 		capacity := c.Probe.Limit * (c.Probe.Interval / c.Probe.Timeout)
 		if len(c.Targets) > capacity {
 			w = append(w, fmt.Sprintf(
-				"target count (%d) exceeds probe capacity (%d = limit %d × interval %ds / timeout %ds), rounds will be delayed",
+				"target count (%d) exceeds probe capacity (%d = limit %d x interval %ds / timeout %ds), rounds will be delayed",
 				len(c.Targets), capacity, c.Probe.Limit, c.Probe.Interval, c.Probe.Timeout,
 			))
 		}
