@@ -188,6 +188,7 @@
               },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "bool_on_off",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -419,6 +420,7 @@
               },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "s",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -535,6 +537,7 @@
               },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "s",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [

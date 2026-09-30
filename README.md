@@ -1,5 +1,10 @@
 # mcping-exporter
 
+[![CI](https://github.com/Tobby-000/mcping-exporter/actions/workflows/ci.yml/badge.svg)](https://github.com/Tobby-000/mcping-exporter/actions/workflows/ci.yml)
+[![golangci-lint](https://github.com/Tobby-000/mcping-exporter/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/Tobby-000/mcping-exporter/actions/workflows/golangci-lint.yml)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/Tobby-000/mcping-exporter)](go.mod)
+[![GHCR](https://img.shields.io/badge/ghcr.io-mcping--exporter-blue?logo=github)](https://github.com/Tobby-000/mcping-exporter/pkgs/container/mcping-exporter)
+
 Minecraft 服务器状态监测的 Prometheus Exporter。提供在线状态、延迟、玩家数指标。
 
 ## 为什么
@@ -108,6 +113,9 @@ flowchart LR
 - 探测总耗时
 
 导入方式：Grafana → Dashboards → Import → 上传 JSON 文件。导入时会提示选择数据源。
+
+
+**注意：** 格式为 `dashboard.grafana.app/v2` ,不支持 Grafana 10.x 及以下版本。
 
 ## License
 
