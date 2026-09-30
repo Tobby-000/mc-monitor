@@ -35,13 +35,11 @@ func ServerListPing(conn *mcnet.Conn, host string, port uint16) ([]byte, time.Du
 	)); err != nil {
 		return nil, 0, fmt.Errorf("write status request: %w", err)
 	}
-	start := time.Now()
 	// status response
 	var p pk.Packet
 	if err := conn.ReadPacket(&p); err != nil {
 		return nil, 0, fmt.Errorf("read status response: %w", err)
 	}
-	duration := time.Since(start)
 	// packid check
 	wantID := int32(packetid.ClientboundStatusResponse)
 	if p.ID != wantID {
@@ -52,6 +50,28 @@ func ServerListPing(conn *mcnet.Conn, host string, port uint16) ([]byte, time.Du
 	if err := p.Scan(&raw); err != nil {
 		return nil, 0, fmt.Errorf("scan status response: %w", err)
 	}
-
-	return []byte(raw), duration, nil
+	// ping-pong
+	pingStart := time.Now()
+	send:=pingStart.UnixMilli()
+	if err:=conn.WritePacket(pk.Marshal(
+		packetid.ServerboundStatusPingRequest,
+		pk.Long(send),
+	));err!=nil{
+		return nil, 0, fmt.Errorf("write ping request: %w", err)
+	}
+	var pong pk.Packet
+	if err:=conn.ReadPacket(&pong);err!=nil{
+		return nil, 0, fmt.Errorf("read pong response: %w", err)
+	}
+	rtt:=time.Since(pingStart)
+	wantPongID:=int32(packetid.ClientboundStatusPongResponse)
+	if pong.ID!=wantPongID{
+		return nil, 0, fmt.Errorf("unexpected packet id: %d, want %d", pong.ID, wantPongID)
+	}
+	var echoed pk.Long
+	if err := pong.Scan(&echoed); err != nil {
+		return nil, 0, fmt.Errorf("scan pong response: %w", err)
+	}
+	_ = echoed
+	return []byte(raw),rtt, nil
 }
