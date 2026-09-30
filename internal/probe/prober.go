@@ -23,7 +23,7 @@ type Prober struct {
 	limit    int
 	logger   *slog.Logger
 	// running 防止上一轮探测未完成时，下一轮 Ticker 触发导致探测重叠。
-	running  atomic.Bool
+	running atomic.Bool
 }
 
 func NewProber(targets []Target, cache *Cache, interval time.Duration, timeout time.Duration, limit int, logger *slog.Logger) *Prober {
@@ -68,12 +68,12 @@ func (p *Prober) probeAll(ctx context.Context) {
 		g.Go(func() error {
 			res, err := mc.Ping(ctx, t.Addr, p.timeout)
 			p.cache.Set(t.Name, ProbeResult{
-				Online:           res.Online && err == nil,
-				Players:          res.Players,
-				Timestamp:        time.Now(),
-				Err:              err,
-				RTTDuration: res.RTTTime,
-				TotalDuration:    res.TotalTime,
+				Online:        res.Online && err == nil,
+				Players:       res.Players,
+				Timestamp:     time.Now(),
+				Err:           err,
+				RTTDuration:   res.RTTTime,
+				TotalDuration: res.TotalTime,
 			})
 			return nil
 		})

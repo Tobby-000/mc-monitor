@@ -7,11 +7,11 @@ import (
 )
 
 type MCCollector struct {
-	cache        *probe.Cache
-	onlineDesc   *prometheus.Desc
-	playerDesc   *prometheus.Desc
-	totalDesc    *prometheus.Desc
-	rttDesc *prometheus.Desc
+	cache      *probe.Cache
+	onlineDesc *prometheus.Desc
+	playerDesc *prometheus.Desc
+	totalDesc  *prometheus.Desc
+	rttDesc    *prometheus.Desc
 }
 
 func NewMCCollector(cache *probe.Cache) *MCCollector {

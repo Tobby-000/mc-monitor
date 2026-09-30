@@ -7,13 +7,12 @@ import (
 )
 
 type ProbeResult struct {
-	Online           bool
-	Players          int
-	Timestamp        time.Time
-	Err              error
-	TotalDuration    time.Duration
-	ProtocolDuration time.Duration
-	RTTDuration      time.Duration
+	Online        bool
+	Players       int
+	Timestamp     time.Time
+	Err           error
+	TotalDuration time.Duration
+	RTTDuration   time.Duration
 }
 
 type Cache struct {
