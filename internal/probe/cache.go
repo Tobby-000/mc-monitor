@@ -13,6 +13,7 @@ type ProbeResult struct {
 	Err              error
 	TotalDuration    time.Duration
 	ProtocolDuration time.Duration
+	RTTDuration      time.Duration
 }
 
 type Cache struct {

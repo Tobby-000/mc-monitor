@@ -72,7 +72,7 @@ func (p *Prober) probeAll(ctx context.Context) {
 				Players:          res.Players,
 				Timestamp:        time.Now(),
 				Err:              err,
-				ProtocolDuration: res.MCTime,
+				ProtocolDuration: res.RTTTime,
 				TotalDuration:    res.TotalTime,
 			})
 			return nil

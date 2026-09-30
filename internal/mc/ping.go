@@ -14,7 +14,7 @@ import (
 type PingResult struct {
 	Online    bool
 	Players   int
-	MCTime    time.Duration
+	RTTTime   time.Duration
 	TotalTime time.Duration
 }
 
@@ -51,7 +51,7 @@ func Ping(ctx context.Context, addr string, timeout time.Duration) (PingResult, 
 	})
 	defer stop()
 	// call protocol func
-	raw, mcDuration, err := ServerListPing(conn, resolved.Host, resolved.Port)
+	raw, RTTDuration, err := ServerListPing(conn, resolved.Host, resolved.Port)
 	if err != nil {
 		return PingResult{}, fmt.Errorf("server list ping: %w", err)
 	}
@@ -68,7 +68,7 @@ func Ping(ctx context.Context, addr string, timeout time.Duration) (PingResult, 
 	return PingResult{
 		Online:    true,
 		Players:   status.Players.Online,
-		MCTime:    mcDuration,
+		RTTTime:   RTTDuration,
 		TotalTime: time.Since(totalStart),
 	}, nil
 }

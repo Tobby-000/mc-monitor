@@ -81,14 +81,11 @@ targets:
 |:---| :--- | :--- |
 | `minecraft_server_online`	| `Gauge`	| 1 在线，0 离线 |
 | `minecraft_players_online`	| `Gauge`	| 在线玩家数 |
-| `minecraft_probe_protocol_duration_seconds`	| `Gauge`	| 一次往返耗时（含 JSON）|
 | `minecraft_ping_rtt_seconds`	| `Gauge`	| PING/PONG 往返耗时 |
 | `minecraft_probe_total_duration_seconds` | `Gauge` | 从DNS到PING/PONG结束后总耗时 |
 
 
 所有指标带 server 标签（配置中的 name）。失败时只暴露 `server_online 0`，其他指标不暴露。
-
-`probe_protocol_duration` 和 `ping_rtt` 都是一次往返。前者响应体是完整 JSON（含 MOTD、favicon），后者只有 8 字节。favicon 越大，两者差距越明显。`ping_rtt` 更接近游戏内显示值。
 
 `probe_total_duration` 是从 DNS 解析到 PING/PONG 结束的完整探测耗时，反映"从开始探测到拿到结果"的总开销。
 
