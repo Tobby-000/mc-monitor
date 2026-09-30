@@ -30,8 +30,8 @@ func NewMCCollector(cache *probe.Cache) *MCCollector {
 			nil,
 		),
 		rttDesc: prometheus.NewDesc(
-			"minecraft_probe_rtt_seconds",
-			"Duration of the Minecraft Server List Ping protocol exchange (handshake, status request, status response).",
+			"minecraft_ping_rtt_seconds",
+			"Round-trip time of a PING/PONG exchange with the server, in seconds.",
 			[]string{"server"},
 			nil,
 		),
